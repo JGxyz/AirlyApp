@@ -21,6 +21,10 @@ public class Installation implements Serializable {
         this.street = street;
     }
 
+    public Installation() {
+
+    }
+
     public long getId() {
         return id;
     }

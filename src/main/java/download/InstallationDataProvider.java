@@ -1,61 +1,58 @@
 package download;
 
-import access.AccessProvider;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Date;
+import model.City;
+import model.Installation;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.sql.*;
 
-public class InstallationDataProvider implements IDataProvider {
-    private String urlString = "https://airapi.airly.eu/v2/installations/nearest?lat=50.062006&lng=19.940984&maxDistanceKM=5&maxResults=50";
-    private String filePath = "/home/jolanta/AGH/AirlyApp/src/main/resources/installation.json";
-    private long interval = 3600*24*7;//updatujemy dane dotyczące instalacji co tydzień
+import java.io.Serializable;
+import java.util.Arrays;
 
-    @Override
-    public void downloadData() {
+public class InstallationDataProvider extends AirDataProvider<Installation> implements Serializable {
+    private City city;
 
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestProperty("Accept", AccessProvider.accept);
-            con.setRequestProperty("apikey", AccessProvider.apikey);
-            con.setRequestMethod("GET");
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            System.out.println(con.getInputStream().toString());
-            StringBuffer content = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-            System.out.println(content.toString());
-            BufferedWriter bwr = new BufferedWriter(new FileWriter(new File(filePath)));
-            System.out.println(content.length());
-            bwr.write(content.toString());
-            bwr.close();
-            in.close();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public InstallationDataProvider(JavaSparkContext sparkContext) {
+        super(sparkContext);
+    }
 
+    public InstallationDataProvider(){
+        super();
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 
     @Override
-    public void updateData() {
-        File file = new File(filePath);
-        long modTime = file.lastModified();
-        Date date = new Date();
-        long currTime = date.getTime();
-        if (currTime - modTime > interval) {
-            downloadData();
-        }
+    public String getUrl() {
+        return "https://airapi.airly.eu/v2/installations/nearest?lat="+city.getLatitude()+"&lng="+city.getLongitude()+"&maxDistanceKM=5&maxResults=50";
     }
 
     @Override
-    public String getResourcesPath() {
-        return filePath;
+    public Encoder<Installation> getEncoder() {
+        return Encoders.bean(Installation.class);
     }
+
+    @Override
+    protected void saveContentToFile(String content) {
+        SQLContext sqlContext = new SQLContext(sparkContext);
+        Dataset<String> tempDS = sqlContext.createDataset(Arrays.asList(content), Encoders.STRING());
+        Dataset<Row> installationsDS = sqlContext.read().json(tempDS);
+        JavaRDD<Installation> installations = installationsDS.toJavaRDD().map(r -> new Installation(/*id*/r.getAs("id"),
+                /*latitude*/((Row)r.getAs("location")).getAs("latitude"),
+                /*longitude*/((Row)r.getAs("location")).getAs("longitude"),
+                /*city*/((Row)r.getAs("address")).getAs("city"),
+                /*country*/((Row)r.getAs("address")).getAs("country"),
+                /*number*/((Row)r.getAs("address")).getAs("number"),
+                /*street*/((Row)r.getAs("address")).getAs("street")));
+        Dataset<Row> ds = sqlContext.createDataFrame(installations, Installation.class);
+        ds.write().mode("overwrite").json(getResourcePath());
+    }
+
+    @Override
+    public String getResourcePath() {
+        return "/home/jolanta/AGH/AirlyApp/src/main/resources/"+city.getNameWithoutPolishSigns()+"_installations.json";
+    }
+
 }
