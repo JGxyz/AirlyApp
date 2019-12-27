@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="900.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.airly.controller.GeneralStatisticsController">
+   <children>
+      <BorderPane prefHeight="900.0" prefWidth="1350.0">
+         <left>
+            <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #464159;" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #8bbabb;">
+                     <children>
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: Quicksan; -fx-font-size: 1.4em; -fx-font-weight: bolder;" text="Air Condition Monitoring" textAlignment="CENTER" wrappingWidth="251.67266845703125" />
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                  </HBox>
+                  <ImageView fitHeight="216.0" fitWidth="211.0" pickOnBounds="true" preserveRatio="true">
+                     <VBox.margin>
+                        <Insets left="40.0" right="40.0" top="160.0" />
+                     </VBox.margin>
+                     <image>
+                        <Image url="@../images/industry.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="161.0" fitWidth="160.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <VBox.margin>
+                        <Insets bottom="30.0" left="70.0" right="20.0" top="60.0" />
+                     </VBox.margin>
+                     <image>
+                        <Image url="@../images/air.png" />
+                     </image>
+                  </ImageView>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </VBox>
+         </left>
+         <center>
+            <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #6c7b95;" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #464159;">
+                     <children>
+                        <ComboBox fx:id="cityComboBox" prefHeight="66.0" prefWidth="230.0" promptText="City" styleClass="combo-box">
+                           <HBox.margin>
+                              <Insets left="20.0" right="20.0" />
+                           </HBox.margin>
+                        </ComboBox>
+                        <ComboBox fx:id="installationComboBox" prefHeight="66.0" prefWidth="230.0" promptText="Installation" styleClass="combo-box">
+                           <HBox.margin>
+                              <Insets left="20.0" right="20.0" />
+                           </HBox.margin>
+                        </ComboBox>
+                        <ComboBox fx:id="parameterComboBox" prefWidth="230.0" promptText="Parameter" styleClass="combo-box">
+                           <HBox.margin>
+                              <Insets left="20.0" right="20.0" />
+                           </HBox.margin>
+                        </ComboBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                  </HBox>
+                  <LineChart fx:id="lineChart" VBox.vgrow="ALWAYS">
+                    <xAxis>
+                      <CategoryAxis fx:id="categoryAxis" side="BOTTOM" style="-fx-tick-label-fill: white"/>
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis fx:id="numberAxis" side="LEFT" style="-fx-tick-label-fill: white"/>
+                    </yAxis>
+                  </LineChart>
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+   <stylesheets>
+      <URL value="@style.css" />
+   </stylesheets>
+</AnchorPane>
