@@ -2,6 +2,7 @@ package pl.edu.agh.airly.model;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import pl.edu.agh.airly.comparator.MeasurementComparator;
 import pl.edu.agh.airly.download.InstallationDataProvider;
 import pl.edu.agh.airly.download.MeasurementDataProvider;
 import pl.edu.agh.airly.visitor.IMonitorVisitor;
@@ -145,7 +146,8 @@ public class Monitor implements Serializable, Visitable {
         if (parameter == null || installation == null) return null;
         return measurements
                 .get(installation.getId())
-                .max((m1, m2) -> (int) (m2.getValue()-m1.getValue()));
+                .filter(m -> m.getParamName().equals(parameter.getName()))
+                .max(new MeasurementComparator());
     }
 
     @Override

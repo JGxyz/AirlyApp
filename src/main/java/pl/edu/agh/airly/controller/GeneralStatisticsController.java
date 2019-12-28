@@ -119,6 +119,12 @@ public class GeneralStatisticsController {
 
         lineChart.getData().add(series);
 
+        Measurement maxMeasurement = monitor.getMaxMeasurement(parameter, currentInstallation);
+        System.out.println("Max mesurement: "+maxMeasurement.getValue());
+        if (parameter.hasStandard())
+            System.out.println("Standard: "+parameter.getStandard());
+
+        System.out.println();
         if (parameter.hasStandard() && monitor.getMaxMeasurement(parameter, currentInstallation).getValue()>=parameter.getStandard()) {
             XYChart.Series standard = new XYChart.Series();
             Double standardValue = parameter.getStandard();
