@@ -3,6 +3,7 @@ package pl.edu.agh.airly.model;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import pl.edu.agh.airly.comparator.MeasurementComparator;
+import pl.edu.agh.airly.connection.Tester;
 import pl.edu.agh.airly.download.InstallationDataProvider;
 import pl.edu.agh.airly.download.MeasurementDataProvider;
 import pl.edu.agh.airly.visitor.IMonitorVisitor;
@@ -18,6 +19,7 @@ public class Monitor implements Serializable, Visitable {
     public InstallationDataProvider installationDataProvider;
     public MeasurementDataProvider measurementsDataProvider;
     public transient JavaSparkContext sparkContext;
+    public transient Tester tester;
 
     public Monitor(JavaSparkContext sparkContext) {
         this.installationDataProvider = new InstallationDataProvider(sparkContext);
@@ -25,9 +27,11 @@ public class Monitor implements Serializable, Visitable {
         this.installations = new HashMap<>();
         this.measurements = new HashMap<>();
         this.sparkContext = sparkContext;
+        this.tester = new Tester();
     }
 
     public void downloadInstallations() {
+        if (!tester.testConnection()) return;
         City.getAll().forEach( city -> {
                     installationDataProvider.setCity(city);
                     installationDataProvider.downloadData();
@@ -36,17 +40,23 @@ public class Monitor implements Serializable, Visitable {
     }
 
     public void readInstallationAndDownloadMeasurements() {
+        if (!tester.testConnection()) {
+            readInstallations();
+            return;
+        }
         readInstallations();
         installations.values().forEach( installations -> {
                     installations
                             .collect()
                             .forEach(installation -> {
                                 measurementsDataProvider.setInstallationId(installation.getId());
-                                measurementsDataProvider.downloadData();
-                                try {
-                                    Thread.sleep(1201);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                if (!measurementsDataProvider.isUptodate()){
+                                    measurementsDataProvider.downloadData();
+                                    try {
+                                        Thread.sleep(1201);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             });
                 }
@@ -135,7 +145,7 @@ public class Monitor implements Serializable, Visitable {
 
     public List<Measurement> getParameterMeasurementsFromInstallation(Parameter parameter, Installation installation) {
         if (parameter == null || installation == null) return Collections.emptyList();
-        System.out.println(installation.getId());
+        System.out.println("INSTALLATION: "+installation.getId());
         return measurements
                 .get(installation.getId())
                 .filter(measurement -> measurement.getParamName().equals(parameter.getName()))
@@ -148,6 +158,16 @@ public class Monitor implements Serializable, Visitable {
                 .get(installation.getId())
                 .filter(m -> m.getParamName().equals(parameter.getName()))
                 .max(new MeasurementComparator());
+    }
+
+    public List<String> getDistinctDatesFromInstallation(Installation installation) {
+        if (installation == null) return null;
+        return measurements
+                .get(installation.getId())
+                .map(m -> m.getFromDateTime())
+                .distinct()
+                .sortBy(m -> m, true, 10)
+                .collect();
     }
 
     @Override

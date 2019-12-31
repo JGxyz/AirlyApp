@@ -5,13 +5,16 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="900.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.airly.controller.GeneralStatisticsController">
@@ -31,22 +34,50 @@
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                      </padding>
                   </HBox>
+                  <Button mnemonicParsing="false" prefHeight="59.0" prefWidth="167.0" text="DETAILED STATISTICS">
+                     <VBox.margin>
+                        <Insets left="60.0" right="50.0" top="50.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="59.0" prefWidth="167.0" text="EXIT">
+                     <VBox.margin>
+                        <Insets left="60.0" top="20.0" />
+                     </VBox.margin>
+                  </Button>
                   <ImageView fitHeight="216.0" fitWidth="211.0" pickOnBounds="true" preserveRatio="true">
                      <VBox.margin>
-                        <Insets left="40.0" right="40.0" top="160.0" />
+                        <Insets left="40.0" right="40.0" top="90.0" />
                      </VBox.margin>
                      <image>
                         <Image url="@../images/industry.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="161.0" fitWidth="160.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                  <Label text="FROM DATETIME" textAlignment="CENTER" textFill="WHITE">
                      <VBox.margin>
-                        <Insets bottom="30.0" left="70.0" right="20.0" top="60.0" />
+                        <Insets left="60.0" top="50.0" />
                      </VBox.margin>
-                     <image>
-                        <Image url="@../images/air.png" />
-                     </image>
-                  </ImageView>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="fromDateTime" prefHeight="60.0" prefWidth="230.0" styleClass="combo-box">
+                     <VBox.margin>
+                        <Insets left="20.0" top="10.0" />
+                     </VBox.margin>
+                  </ComboBox>
+                  <Label text="TILL DATETIME" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="70.0" top="30.0" />
+                     </VBox.margin>
+                  </Label>
+                  <ComboBox fx:id="tillDateTime" prefHeight="66.0" prefWidth="230.0" styleClass="combo-box">
+                     <VBox.margin>
+                        <Insets left="20.0" top="10.0" />
+                     </VBox.margin>
+                  </ComboBox>
                </children>
                <BorderPane.margin>
                   <Insets />
@@ -63,7 +94,7 @@
                               <Insets left="20.0" right="20.0" />
                            </HBox.margin>
                         </ComboBox>
-                        <ComboBox fx:id="installationComboBox" prefHeight="66.0" prefWidth="230.0" promptText="Installation" styleClass="combo-box">
+                        <ComboBox fx:id="installationComboBox" prefHeight="66.0" prefWidth="291.0" promptText="Installation" styleClass="combo-box">
                            <HBox.margin>
                               <Insets left="20.0" right="20.0" />
                            </HBox.margin>
@@ -78,12 +109,12 @@
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                      </padding>
                   </HBox>
-                  <LineChart fx:id="lineChart" VBox.vgrow="ALWAYS">
+                  <LineChart fx:id="lineChart" prefHeight="796.0" prefWidth="1058.0" VBox.vgrow="ALWAYS">
                     <xAxis>
-                      <CategoryAxis fx:id="categoryAxis" side="BOTTOM" style="-fx-tick-label-fill: white"/>
+                      <CategoryAxis fx:id="categoryAxis" side="BOTTOM" style="-fx-tick-label-fill: white" />
                     </xAxis>
                     <yAxis>
-                      <NumberAxis fx:id="numberAxis" side="LEFT" style="-fx-tick-label-fill: white"/>
+                      <NumberAxis fx:id="numberAxis" side="LEFT" style="-fx-tick-label-fill: white" />
                     </yAxis>
                   </LineChart>
                </children>

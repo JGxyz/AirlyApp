@@ -1,15 +1,17 @@
 package pl.edu.agh.airly.download;
 
-import pl.edu.agh.airly.model.Measurement;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
+import pl.edu.agh.airly.comparator.MeasurementDateComparator;
+import pl.edu.agh.airly.model.Measurement;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class MeasurementDataProvider extends AirDataProvider<Measurement> implements Serializable {
     private long installationId;
@@ -50,8 +52,20 @@ public class MeasurementDataProvider extends AirDataProvider<Measurement> implem
             finalDS.show();
             JavaRDD<Measurement> measurements = finalDS.toJavaRDD().map(row -> new Measurement(row.getAs("fromDateTime"), row.getAs("tillDateTime"), row.getAs("name"), row.getAs("value"), installationId));
             Dataset<Row> ds = sqlContext.createDataFrame(measurements, Measurement.class);
+            Optional<Measurement> latest = getLatestMeasurement();
+            if (latest.isPresent())
+                ds = ds.where(ds.col("fromDateTime").gt(latest.get().getFromDateTime()));
             ds.write().mode("append").json(getResourcePath());
         }
+    }
+
+    private Optional<Measurement> getLatestMeasurement() {
+        Optional<Measurement> measurement = Optional.empty();
+        Optional<JavaRDD<Measurement>> measurementJavaRDD = readData();
+        if (measurementJavaRDD.isPresent()) {
+            measurement = Optional.of(measurementJavaRDD.get().max(new MeasurementDateComparator()));
+        }
+        return measurement;
     }
 
     @Override

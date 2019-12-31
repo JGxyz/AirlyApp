@@ -18,6 +18,7 @@ import java.util.Optional;
 
 public abstract class AirDataProvider<T> {
     protected SQLContext sqlContext;
+    protected long interval = 3600;
 
     public AirDataProvider(JavaSparkContext sparkContext) {
         this.sqlContext = new SQLContext(sparkContext);
@@ -57,15 +58,12 @@ public abstract class AirDataProvider<T> {
         }
     }
 
-    public void updateData() {
-        long interval = 3600*24*7;//updatujemy dane dotyczące instalacji co tydzień
+    public boolean isUptodate() {
         File file = new File(getResourcePath());
         long modTime = file.lastModified();
         Date date = new Date();
         long currTime = date.getTime();
-        if (currTime - modTime > interval) {
-            downloadData();
-        }
+        return currTime-modTime < interval ? false : true;
     }
 
     public Optional<JavaRDD<T>> readData() {

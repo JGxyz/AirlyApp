@@ -1,0 +1,6 @@
+{"fromDateTime":"2019-12-30T20:00:00.000Z","installationId":8077,"paramName":"PM1","tillDateTime":"2019-12-30T21:00:00.000Z","value":25.8}
+{"fromDateTime":"2019-12-30T20:00:00.000Z","installationId":8077,"paramName":"PM25","tillDateTime":"2019-12-30T21:00:00.000Z","value":41.09}
+{"fromDateTime":"2019-12-30T20:00:00.000Z","installationId":8077,"paramName":"PM10","tillDateTime":"2019-12-30T21:00:00.000Z","value":77.68}
+{"fromDateTime":"2019-12-30T20:00:00.000Z","installationId":8077,"paramName":"PRESSURE","tillDateTime":"2019-12-30T21:00:00.000Z","value":1027.42}
+{"fromDateTime":"2019-12-30T20:00:00.000Z","installationId":8077,"paramName":"HUMIDITY","tillDateTime":"2019-12-30T21:00:00.000Z","value":75.25}
+{"fromDateTime":"2019-12-30T20:00:00.000Z","installationId":8077,"paramName":"TEMPERATURE","tillDateTime":"2019-12-30T21:00:00.000Z","value":2.52}
