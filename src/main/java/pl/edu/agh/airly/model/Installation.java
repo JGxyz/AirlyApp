@@ -83,6 +83,10 @@ public class Installation implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%d - %s %s", id, street, number);
+        if (street != null && number != null)
+            return String.format("%d - %s %s", id, street, number);
+        if (street != null)
+            return  String.format("%d - %s", id, street);
+        return String.format("%d", id);
     }
 }

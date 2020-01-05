@@ -63,7 +63,7 @@ public abstract class AirDataProvider<T> {
         long modTime = file.lastModified();
         Date date = new Date();
         long currTime = date.getTime();
-        return currTime-modTime < interval ? false : true;
+        return currTime-modTime < interval ? true : false;
     }
 
     public Optional<JavaRDD<T>> readData() {
