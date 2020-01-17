@@ -6,10 +6,7 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.SQLContext;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,7 +15,7 @@ import java.util.Optional;
 
 public abstract class AirDataProvider<T> {
     protected SQLContext sqlContext;
-    protected long interval = 3600;
+    protected long interval = 3600000;//time in milliseconds
 
     public AirDataProvider(JavaSparkContext sparkContext) {
         this.sqlContext = new SQLContext(sparkContext);
@@ -49,9 +46,7 @@ public abstract class AirDataProvider<T> {
             }
             saveContentToFile(content.toString());
         } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             if (con != null)
                 con.disconnect();

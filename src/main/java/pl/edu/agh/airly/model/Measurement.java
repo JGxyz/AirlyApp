@@ -1,6 +1,8 @@
 package pl.edu.agh.airly.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Measurement implements Serializable {
     private String fromDateTime;
@@ -20,6 +22,12 @@ public class Measurement implements Serializable {
     public Measurement() {
     }
 
+    public int getHour() {
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern("MM/dd/yyyy'T'HH:mm:ss:SSS z");
+        LocalDateTime date = LocalDateTime.parse(fromDateTime, formatter);
+        return date.getHour();
+    }
 
     public String getFromDateTime() {
         return fromDateTime;

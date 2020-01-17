@@ -1,0 +1,12 @@
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":3403,"paramName":"PM1","tillDateTime":"2020-01-17T15:00:00.000Z","value":16.54}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":3403,"paramName":"PM25","tillDateTime":"2020-01-17T15:00:00.000Z","value":25.55}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":3403,"paramName":"PM10","tillDateTime":"2020-01-17T15:00:00.000Z","value":41.38}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":3403,"paramName":"PRESSURE","tillDateTime":"2020-01-17T15:00:00.000Z","value":1022.32}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":3403,"paramName":"HUMIDITY","tillDateTime":"2020-01-17T15:00:00.000Z","value":76.68}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":3403,"paramName":"TEMPERATURE","tillDateTime":"2020-01-17T15:00:00.000Z","value":2.91}
+{"fromDateTime":"2020-01-17T15:00:00.000Z","installationId":3403,"paramName":"PM1","tillDateTime":"2020-01-17T16:00:00.000Z","value":18.29}
+{"fromDateTime":"2020-01-17T15:00:00.000Z","installationId":3403,"paramName":"PM25","tillDateTime":"2020-01-17T16:00:00.000Z","value":28.85}
+{"fromDateTime":"2020-01-17T15:00:00.000Z","installationId":3403,"paramName":"PM10","tillDateTime":"2020-01-17T16:00:00.000Z","value":45.09}
+{"fromDateTime":"2020-01-17T15:00:00.000Z","installationId":3403,"paramName":"PRESSURE","tillDateTime":"2020-01-17T16:00:00.000Z","value":1021.39}
+{"fromDateTime":"2020-01-17T15:00:00.000Z","installationId":3403,"paramName":"HUMIDITY","tillDateTime":"2020-01-17T16:00:00.000Z","value":76.13}
+{"fromDateTime":"2020-01-17T15:00:00.000Z","installationId":3403,"paramName":"TEMPERATURE","tillDateTime":"2020-01-17T16:00:00.000Z","value":2.23}

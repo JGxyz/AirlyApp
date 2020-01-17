@@ -4,7 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import org.apache.spark.api.java.JavaSparkContext;
+import pl.edu.agh.airly.model.Monitor;
 
 import java.io.IOException;
 
@@ -12,28 +12,32 @@ import java.io.IOException;
 public class AppController {
 
     private Stage primaryStage;
-    private JavaSparkContext sparkContext;
+    private Monitor monitor;
 
-    public AppController(Stage primaryStage, JavaSparkContext sparkContext) {
+    public AppController(Stage primaryStage, Monitor monitor) {
         this.primaryStage = primaryStage;
-        this.sparkContext = sparkContext;
+        this.monitor = monitor;
     }
 
     public AppController() {}
 
     public void initRootLayout() {
+        showView("/view/MainView.fxml");
+    }
+
+    public void showView(String viewName) {
         try {
             this.primaryStage.setTitle("AirlyApp");
 
             // load layout from FXML file
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/view/MainView.fxml"));
+            loader.setLocation(getClass().getResource(viewName));
             AnchorPane rootLayout = (AnchorPane) loader.load();
 
             //set initial data into pl.edu.agh.airly.controller
-            GeneralStatisticsController controller = loader.getController();
+            BasicStatisticsController controller = loader.getController();
             controller.setAppController(this);
-            controller.setData(sparkContext);
+            controller.setData(monitor);
 
             // add layout to a scene and show them all
             Scene scene = new Scene(rootLayout);
@@ -45,6 +49,10 @@ public class AppController {
             e.printStackTrace();
         }
 
+    }
+
+    public void closeView() {
+        primaryStage.close();
     }
 
     /*public boolean showTransactionEditDialog(Transaction transaction) {
@@ -75,5 +83,6 @@ public class AppController {
             e.printStackTrace();
             return false;
         }
-    }*/
+    }
+     */
 }

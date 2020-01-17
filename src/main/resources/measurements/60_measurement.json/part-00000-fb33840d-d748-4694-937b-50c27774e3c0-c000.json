@@ -1,0 +1,3 @@
+{"fromDateTime":"2020-01-16T14:00:00.000Z","installationId":60,"paramName":"PM10","tillDateTime":"2020-01-16T15:00:00.000Z","value":78.91}
+{"fromDateTime":"2020-01-16T15:00:00.000Z","installationId":60,"paramName":"PM10","tillDateTime":"2020-01-16T16:00:00.000Z","value":92.57}
+{"fromDateTime":"2020-01-16T16:00:00.000Z","installationId":60,"paramName":"PM10","tillDateTime":"2020-01-16T17:00:00.000Z","value":103.12}

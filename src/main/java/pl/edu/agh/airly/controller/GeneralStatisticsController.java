@@ -4,13 +4,13 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
-import org.apache.spark.api.java.JavaSparkContext;
 import pl.edu.agh.airly.comparator.MeasurementDateComparator;
 import pl.edu.agh.airly.model.*;
 
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class GeneralStatisticsController {
+public class GeneralStatisticsController implements BasicStatisticsController {
     private AppController appController;
     private Monitor monitor;
     private Installation currentInstallation;
@@ -54,11 +54,21 @@ public class GeneralStatisticsController {
     @FXML
     private NumberAxis numberAxis;
 
-    public void setData(JavaSparkContext sparkContext) {
+    @FXML
+    protected void handleDetailedStatisticsAction(ActionEvent event) {
+        appController.showView("/view/DetailsView.fxml");
+    }
+
+    @FXML
+    protected void handleExitAction(ActionEvent event) {
+        appController.closeView();
+    }
+
+    @Override
+    public void setData(Monitor monitor) {
         cityComboBox.setItems(FXCollections.observableList(City.getAll().stream().collect(Collectors.toList())));
-        this.monitor = new Monitor(sparkContext);
-        monitor.readInstallationAndDownloadMeasurements();
-        monitor.readMeasuremensts();
+
+        this.monitor = monitor;
 
         cityComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<City>() {
             @Override
@@ -99,6 +109,7 @@ public class GeneralStatisticsController {
 
     }
 
+    @Override
     public void setAppController(AppController appController) {
         this.appController = appController;
     }

@@ -1,0 +1,12 @@
+{"fromDateTime":"2020-01-17T13:00:00.000Z","installationId":37,"paramName":"PM25","tillDateTime":"2020-01-17T14:00:00.000Z","value":51.95}
+{"fromDateTime":"2020-01-17T13:00:00.000Z","installationId":37,"paramName":"PM10","tillDateTime":"2020-01-17T14:00:00.000Z","value":55.08}
+{"fromDateTime":"2020-01-17T13:00:00.000Z","installationId":37,"paramName":"NO2","tillDateTime":"2020-01-17T14:00:00.000Z","value":34.22}
+{"fromDateTime":"2020-01-17T13:00:00.000Z","installationId":37,"paramName":"O3","tillDateTime":"2020-01-17T14:00:00.000Z","value":18.55}
+{"fromDateTime":"2020-01-17T13:00:00.000Z","installationId":37,"paramName":"SO2","tillDateTime":"2020-01-17T14:00:00.000Z","value":5.18}
+{"fromDateTime":"2020-01-17T13:00:00.000Z","installationId":37,"paramName":"CO","tillDateTime":"2020-01-17T14:00:00.000Z","value":659.52}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":37,"paramName":"PM25","tillDateTime":"2020-01-17T15:00:00.000Z","value":50.05}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":37,"paramName":"PM10","tillDateTime":"2020-01-17T15:00:00.000Z","value":51.34}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":37,"paramName":"NO2","tillDateTime":"2020-01-17T15:00:00.000Z","value":33.43}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":37,"paramName":"O3","tillDateTime":"2020-01-17T15:00:00.000Z","value":22.42}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":37,"paramName":"SO2","tillDateTime":"2020-01-17T15:00:00.000Z","value":4.61}
+{"fromDateTime":"2020-01-17T14:00:00.000Z","installationId":37,"paramName":"CO","tillDateTime":"2020-01-17T15:00:00.000Z","value":658.1}
