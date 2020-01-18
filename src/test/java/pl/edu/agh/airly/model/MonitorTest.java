@@ -132,6 +132,64 @@ public class MonitorTest {
     }
 
     @Test
+    public void findInstallationsWithHighestValuesTest() {
+        Measurement b12 = new Measurement("2019-12-30T23:00:00.000Z","2019-12-31T00:00:00.000Z",
+                "PM10",  51.0, 9983);
+        Measurement b22 = new Measurement("2019-12-29T22:00:00.000Z","2019-12-29T23:00:00.000Z",
+                "PM10",  51.0, 7978);
+        Measurement b32 = new Measurement("2019-12-29T22:00:00.000Z","2019-12-29T23:00:00.000Z",
+                "PM10",  54.0, 2920);
+        Measurement k33 = new Measurement("2019-12-30T14:00:00.000Z","2019-12-30T15:00:00.000Z",
+                "PM10",  45.0, 1010);
+        Measurement k23 = new Measurement("2019-12-30T22:00:00.000Z","2019-12-30T23:00:00.000Z",
+                "PM10",  60.0, 43);
+        Measurement k12 = new Measurement("2019-12-30T23:00:00.000Z","2019-12-31T00:00:00.000Z",
+                "PM10",  51.0, 2227);
+        Measurement w32 = new Measurement("2019-12-29T22:00:00.000Z","2019-12-29T23:00:00.000Z",
+                "PM10",  53.0, 2141);
+        Measurement w22 = new Measurement("2019-12-29T22:00:00.000Z","2019-12-29T23:00:00.000Z",
+                "PM10",  48.0, 7901);
+        Measurement w11 = new Measurement("2019-12-29T23:00:00.000Z","2019-12-30T00:00:00.000Z",
+                "PM10",  55.0, 787);
+
+        Installation b1 = new Installation(9983, 53.135394,23.130144,"Bialystok",
+                "Poland", "11", "Zwyciestwa");
+        Installation b2 = new Installation(7978, 53.114879, 23.194593, "Bialystok", "Poland", "16", "Żubrów");
+        Installation b3 = new Installation(2920, 53.15586, 23.200312, "Bialystok", "Poland", "5", "Trawiasta");
+
+        Installation w1 = new Installation(787,51.072434,17.006976,"Wrocław","Poland","8","aleja Karkonoska");
+        Installation w2 = new Installation(7901, 51.09364, 16.97707, "Wrocław", "Poland", "7A","Nasturcjowa");
+        Installation w3 = new Installation(2141, 51.127037, 16.978491, "Wrocław", "Poland", "9", "Tokarska");
+
+        Installation k1 = new Installation(2227,50.304292,19.033288,"Katowice","Poland","8","1 Maja");
+        Installation k2 = new Installation(43, 50.264611, 18.975028, "Katowice", "Poland", "7A","Sławka");
+        Installation k3 = new Installation(1011, 50.308643, 19.006968, "Katowice", "Poland", "9", "Władysława Reymonta");
+
+
+        Pair<Installation, Measurement> km1 = new ImmutablePair<>(k1, k12);
+        Pair<Installation, Measurement> km2 = new ImmutablePair<>(k2, k23);
+        Pair<Installation, Measurement> km3 = new ImmutablePair<>(k3, k33);
+
+        Pair<Installation, Measurement> wm1 = new ImmutablePair<>(w1, w11);
+        Pair<Installation, Measurement> wm2 = new ImmutablePair<>(w2, w22);
+        Pair<Installation, Measurement> wm3 = new ImmutablePair<>(w3, w32);
+
+        Pair<Installation, Measurement> bm1 = new ImmutablePair<>(b1, b12);
+        Pair<Installation, Measurement> bm2 = new ImmutablePair<>(b2, b22);
+        Pair<Installation, Measurement> bm3 = new ImmutablePair<>(b3, b32);
+
+        Parameter parameter = Parameter.PM10;
+        String fromDateTime = "2019-12-29T00:00:00.000Z";
+        String tillDateTime = "2019-12-31T23:00:00.000Z";
+
+        List<Pair<Installation, Measurement>> result = monitor.findInstallationsWithHighestValues(parameter, fromDateTime, tillDateTime);
+        List<Pair<Installation, Measurement>> expected = Arrays.asList(km2, wm1, bm3, wm3, bm1, bm2, km1, wm2, km3);
+
+        assertEquals(expected, result);
+
+    }
+
+    @Test
     public void getHourWithTheHighestAverageTest() {
         Parameter parameter = Parameter.PM10;
         City city = City.BIALYSTOK;
@@ -183,6 +241,8 @@ public class MonitorTest {
 
         assertEquals(expected, result);
     }
+
+
 
     @Test
     public void countMeasurementsTest() {

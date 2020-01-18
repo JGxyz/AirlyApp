@@ -3,6 +3,7 @@ package pl.edu.agh.airly.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class Measurement implements Serializable {
     private String fromDateTime;
@@ -20,6 +21,23 @@ public class Measurement implements Serializable {
     }
 
     public Measurement() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Measurement that = (Measurement) o;
+        return Double.compare(that.value, value) == 0 &&
+                installationId == that.installationId &&
+                Objects.equals(fromDateTime, that.fromDateTime) &&
+                Objects.equals(tillDateTime, that.tillDateTime) &&
+                Objects.equals(paramName, that.paramName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fromDateTime, tillDateTime, paramName, value, installationId);
     }
 
     public int getHour() {
