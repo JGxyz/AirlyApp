@@ -4,10 +4,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import pl.edu.agh.airly.comparator.CityDoublePairComparator;
-import pl.edu.agh.airly.comparator.InstallationMeasurementPairComparator;
-import pl.edu.agh.airly.comparator.IntDoublePairComparator;
-import pl.edu.agh.airly.comparator.MeasurementComparator;
+import pl.edu.agh.airly.comparator.*;
 import pl.edu.agh.airly.connection.Tester;
 import pl.edu.agh.airly.download.InstallationDataProvider;
 import pl.edu.agh.airly.download.MeasurementDataProvider;
@@ -167,20 +164,25 @@ public class Monitor implements Serializable {
                 .collect();
     }
 
-    private Measurement getMaxMeasurement(JavaRDD<Measurement> measurements, Parameter parameter, String fromDateTime, String tillDateTime) {
-        return measurements
+    private Optional<Measurement> getMaxMeasurement(JavaRDD<Measurement> measurements, Parameter parameter, String fromDateTime, String tillDateTime) {
+        List<Measurement> selected = measurements
                 .filter(m -> m.getParamName().equals(parameter.getName()))
                 .filter(m -> CharSequence.compare(m.getFromDateTime(), fromDateTime) >= 0 && CharSequence.compare(m.getFromDateTime(), tillDateTime) <= 0)
-                .max(new MeasurementComparator());
+                .collect();
+        if (selected != null && !selected.isEmpty())
+                return Optional.of(sparkContext.parallelize(selected)
+                        .max(new MeasurementComparator()));
+        else return Optional.empty();
     }
 
-    public List<Pair<Installation, Measurement>> findInstallationsWithHighestValues(Parameter parameter, String fromDateTime, String tillDateTime) {
+    public List<Pair<Installation, Measurement>> findInstallationsWithValuesAboveStandard(Parameter parameter, String fromDateTime, String tillDateTime) {
         return measurements
                 .entrySet()
                 .stream()
                 .map(entry ->
                         new ImmutablePair<>(entry.getKey(), getMaxMeasurement(entry.getValue(), parameter, fromDateTime, tillDateTime)))
-                .filter(pair -> pair.right != null)
+                .filter(pair -> pair.right.isPresent() && pair.right.get().getValue() >= parameter.getStandard())
+                .map(pair -> new ImmutablePair<>(pair.left, pair.right.get()))
                 .sorted(new InstallationMeasurementPairComparator())
                 .limit(10)
                 .collect(Collectors.toList());
@@ -239,7 +241,7 @@ public class Monitor implements Serializable {
                 .entrySet()
                 .stream()
                 .map(entry -> {
-                    JavaRDD<Measurement> joinedMeasurements = joinMeasurement(entry.getValue());
+                    JavaRDD<Measurement> joinedMeasurements = joinMeasurement(entry.getValue()).filter(measurement -> measurement.getParamName().equals(parameter.getName()));
                     return new ImmutablePair<>(entry.getKey(), getAverageValue(joinedMeasurements));
                     })
                 .filter(pair -> pair.right != null)
@@ -252,16 +254,35 @@ public class Monitor implements Serializable {
         JavaRDD<Measurement> joinedMeasurement = joinMeasurement(installations
                                     .get(city));
 
-        joinedMeasurement
-                .collect()
-                .forEach(System.out::println);
-
         return joinedMeasurement
+                .filter(measurement -> measurement.getParamName().equals(parameter.getName()))
                 .groupBy(Measurement::getHour)
                 .map(group -> new ImmutablePair<>(group._1, getAverageValue(group._2)))
                 .max(new IntDoublePairComparator());
 
+    }
 
+    public List<String> getAllDates() {
+        Set<String> dates = new HashSet<>();
+
+        for (JavaRDD<Measurement> measurementJavaRDD : measurements.values()) {
+            List<String> fromDateTime = measurementJavaRDD
+                    .map(measurement -> measurement.getFromDateTime())
+                    .collect();
+            if (fromDateTime.size() > 0)
+                dates.addAll(fromDateTime);
+        }
+
+        List<String> uniqueDates = new LinkedList<String>(dates);
+
+        uniqueDates.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return CharSequence.compare(o1, o2);
+            }
+        });
+
+        return uniqueDates;
     }
 
 }

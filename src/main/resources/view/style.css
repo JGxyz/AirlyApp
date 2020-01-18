@@ -22,3 +22,18 @@
     -fx-background-color: #8bbabb;
     -fx-text-fill: white;
 }
+
+.table-style {
+    -fx-background-color: #8bbabb;
+    -fx-text-fill: white;
+}
+
+.table-row-cell:selected .column-style {
+    -fx-background-color: #464159;
+    -fx-text-fill: white;
+}
+
+.column-style {
+    -fx-background-color: #464159;
+    -fx-text-fill: white;
+}

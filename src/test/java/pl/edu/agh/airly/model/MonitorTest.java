@@ -2,6 +2,8 @@ package pl.edu.agh.airly.model;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -18,6 +20,9 @@ public class MonitorTest {
 
     @Before
     public void setMonitor() {
+        Logger.getLogger("org").setLevel(Level.OFF);
+        Logger.getLogger("akka").setLevel(Level.OFF);
+
         SparkConf sparkConf = new SparkConf().setAppName("AirlyApp").setMaster("local[*]");
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
         this.monitor = new Monitor(sparkContext);
@@ -182,7 +187,7 @@ public class MonitorTest {
         String fromDateTime = "2019-12-29T00:00:00.000Z";
         String tillDateTime = "2019-12-31T23:00:00.000Z";
 
-        List<Pair<Installation, Measurement>> result = monitor.findInstallationsWithHighestValues(parameter, fromDateTime, tillDateTime);
+        List<Pair<Installation, Measurement>> result = monitor.findInstallationsWithValuesAboveStandard(parameter, fromDateTime, tillDateTime);
         List<Pair<Installation, Measurement>> expected = Arrays.asList(km2, wm1, bm3, wm3, bm1, bm2, km1, wm2, km3);
 
         assertEquals(expected, result);

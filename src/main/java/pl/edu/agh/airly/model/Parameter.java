@@ -1,6 +1,8 @@
 package pl.edu.agh.airly.model;
 
 import java.util.EnumSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public enum Parameter {
     PM1("PM1", false, Integer.MAX_VALUE),
@@ -35,7 +37,10 @@ public enum Parameter {
         return standard;
     }
 
-    public static EnumSet<Parameter> getAll() { return EnumSet.allOf(Parameter.class);}
+    public static Set<Parameter> getAll() { return EnumSet.allOf(Parameter.class)
+            .stream()
+            .filter(parameter -> parameter != PRESSURE && parameter != HUMIDITY && parameter != TEMPERATURE)
+            .collect(Collectors.toSet());}
 
     @Override
     public String toString() {
