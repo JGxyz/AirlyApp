@@ -20,7 +20,6 @@ import java.util.stream.StreamSupport;
 public class Monitor implements Serializable {
     private Map<City, JavaRDD<Installation>> installations;
     private Map<Installation, JavaRDD<Measurement>> measurements;
-    private JavaRDD<Measurement> joinedMeasurements;
     private InstallationDataProvider installationDataProvider;
     private MeasurementDataProvider measurementsDataProvider;
     private transient JavaSparkContext sparkContext;
@@ -31,9 +30,16 @@ public class Monitor implements Serializable {
         this.measurementsDataProvider = new MeasurementDataProvider(sparkContext);
         this.installations = new HashMap<>();
         this.measurements = new HashMap<>();
-        this.joinedMeasurements = sparkContext.emptyRDD();
         this.sparkContext = sparkContext;
         this.tester = new Tester();
+    }
+
+    public void addInstallations(City city, JavaRDD<Installation> installationRDD) {
+        this.installations.put(city, installationRDD);
+    }
+
+    public void addMeasurements(Installation installation, JavaRDD<Measurement> measurementRDD) {
+        this.measurements.put(installation, measurementRDD);
     }
 
     public void downloadInstallations() {
@@ -180,15 +186,38 @@ public class Monitor implements Serializable {
                 .collect(Collectors.toList());
     }
 
+    JavaRDD<Measurement> getMeasurements(Installation installation) {
+        return measurements.get(installation);
+    }
+
+    public long countMeasurement(City city) {
+        JavaRDD<Installation> installationsRDD = installations.get(city);
+
+        Optional<Long> optionalLong = installationsRDD
+                .collect()
+                .stream()
+                .map(installation ->
+                    measurements.get(installation).count())
+                .reduce((x, y) -> x+y);
+
+        if (optionalLong.isPresent()) {
+            return optionalLong.get();
+        } else {
+            return  0;
+        }
+    }
+
     private JavaRDD<Measurement> joinMeasurement(JavaRDD<Installation> installations) {
-        JavaRDD<Measurement> joinedMeasurement = sparkContext.emptyRDD();
-        installations
-                .foreach(
-                        installation -> {
-                            JavaRDD<Measurement> tmpMeasurements = measurements.getOrDefault(installation, null);
-                            joinedMeasurement.union(tmpMeasurements);
-                        }
-                );
+        JavaRDD<Measurement> joinedMeasurement = null;
+        for (Installation installation : installations.collect()) {
+            JavaRDD<Measurement> tmpMeasurements = measurements.getOrDefault(installation, null);
+            if (tmpMeasurements == null) continue;
+            if (joinedMeasurement == null || joinedMeasurement.isEmpty()) {
+                joinedMeasurement = tmpMeasurements;
+            }
+            else
+                joinedMeasurement = joinedMeasurement.union(tmpMeasurements);
+        }
         return joinedMeasurement;
     }
 
@@ -222,6 +251,10 @@ public class Monitor implements Serializable {
     public Pair<Integer, Double> getHourWithTheHighestAverage(City city, Parameter parameter) {
         JavaRDD<Measurement> joinedMeasurement = joinMeasurement(installations
                                     .get(city));
+
+        joinedMeasurement
+                .collect()
+                .forEach(System.out::println);
 
         return joinedMeasurement
                 .groupBy(Measurement::getHour)

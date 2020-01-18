@@ -1,6 +1,7 @@
 package pl.edu.agh.airly.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Installation implements Serializable {
    private long id;
@@ -88,5 +89,24 @@ public class Installation implements Serializable {
         if (street != null)
             return  String.format("%d - %s", id, street);
         return String.format("%d", id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Installation that = (Installation) o;
+        return id == that.id &&
+                Double.compare(that.latitude, latitude) == 0 &&
+                Double.compare(that.longitude, longitude) == 0 &&
+                Objects.equals(city, that.city) &&
+                Objects.equals(country, that.country) &&
+                Objects.equals(number, that.number) &&
+                Objects.equals(street, that.street);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, latitude, longitude, city, country, number, street);
     }
 }

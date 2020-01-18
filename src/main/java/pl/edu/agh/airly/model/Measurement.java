@@ -24,7 +24,7 @@ public class Measurement implements Serializable {
 
     public int getHour() {
         DateTimeFormatter formatter = DateTimeFormatter
-                .ofPattern("MM/dd/yyyy'T'HH:mm:ss:SSS z");
+                .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         LocalDateTime date = LocalDateTime.parse(fromDateTime, formatter);
         return date.getHour();
     }
