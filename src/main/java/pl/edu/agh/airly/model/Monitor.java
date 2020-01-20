@@ -4,7 +4,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import pl.edu.agh.airly.comparator.*;
+import pl.edu.agh.airly.comparator.CityDoublePairComparator;
+import pl.edu.agh.airly.comparator.InstallationMeasurementPairComparator;
+import pl.edu.agh.airly.comparator.IntDoublePairComparator;
+import pl.edu.agh.airly.comparator.MeasurementComparator;
 import pl.edu.agh.airly.connection.Tester;
 import pl.edu.agh.airly.download.InstallationDataProvider;
 import pl.edu.agh.airly.download.MeasurementDataProvider;
@@ -170,8 +173,8 @@ public class Monitor implements Serializable {
                 .filter(m -> CharSequence.compare(m.getFromDateTime(), fromDateTime) >= 0 && CharSequence.compare(m.getFromDateTime(), tillDateTime) <= 0)
                 .collect();
         if (selected != null && !selected.isEmpty())
-                return Optional.of(sparkContext.parallelize(selected)
-                        .max(new MeasurementComparator()));
+            return Optional.of(sparkContext.parallelize(selected)
+                    .max(new MeasurementComparator()));
         else return Optional.empty();
     }
 
@@ -181,7 +184,7 @@ public class Monitor implements Serializable {
                 .stream()
                 .map(entry ->
                         new ImmutablePair<>(entry.getKey(), getMaxMeasurement(entry.getValue(), parameter, fromDateTime, tillDateTime)))
-                .filter(pair -> pair.right.isPresent() && pair.right.get().getValue() >= parameter.getStandard())
+                .filter(pair -> pair.right.isPresent() && pair.left.getCity() != null && pair.right.get().getValue() >= parameter.getStandard())
                 .map(pair -> new ImmutablePair<>(pair.left, pair.right.get()))
                 .sorted(new InstallationMeasurementPairComparator())
                 .limit(10)
@@ -199,13 +202,13 @@ public class Monitor implements Serializable {
                 .collect()
                 .stream()
                 .map(installation ->
-                    measurements.get(installation).count())
-                .reduce((x, y) -> x+y);
+                        measurements.get(installation).count())
+                .reduce((x, y) -> x + y);
 
         if (optionalLong.isPresent()) {
             return optionalLong.get();
         } else {
-            return  0;
+            return 0;
         }
     }
 
@@ -216,8 +219,7 @@ public class Monitor implements Serializable {
             if (tmpMeasurements == null) continue;
             if (joinedMeasurement == null || joinedMeasurement.isEmpty()) {
                 joinedMeasurement = tmpMeasurements;
-            }
-            else
+            } else
                 joinedMeasurement = joinedMeasurement.union(tmpMeasurements);
         }
         return joinedMeasurement;
@@ -243,7 +245,7 @@ public class Monitor implements Serializable {
                 .map(entry -> {
                     JavaRDD<Measurement> joinedMeasurements = joinMeasurement(entry.getValue()).filter(measurement -> measurement.getParamName().equals(parameter.getName()));
                     return new ImmutablePair<>(entry.getKey(), getAverageValue(joinedMeasurements));
-                    })
+                })
                 .filter(pair -> pair.right != null)
                 .sorted(new CityDoublePairComparator())
                 .limit(10)
@@ -252,7 +254,7 @@ public class Monitor implements Serializable {
 
     public Pair<Integer, Double> getHourWithTheHighestAverage(City city, Parameter parameter) {
         JavaRDD<Measurement> joinedMeasurement = joinMeasurement(installations
-                                    .get(city));
+                .get(city));
 
         return joinedMeasurement
                 .filter(measurement -> measurement.getParamName().equals(parameter.getName()))

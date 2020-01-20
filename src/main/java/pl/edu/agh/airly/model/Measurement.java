@@ -6,11 +6,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Measurement implements Serializable {
+    long installationId;
     private String fromDateTime;
     private String tillDateTime;
     private String paramName;
     private double value;
-    long installationId;
 
     public Measurement(String fromDateTime, String tillDateTime, String paramName, double value, long installationId) {
         this.fromDateTime = fromDateTime;
@@ -89,6 +89,11 @@ public class Measurement implements Serializable {
 
     @Override
     public String toString() {
-        return "TIME: "+fromDateTime+"-"+tillDateTime+" PARAM: "+paramName+" VALUE: "+value;
+        return "TIME: " + fromDateTime + "-" + tillDateTime + " PARAM: " + paramName + " VALUE: " + value;
+    }
+
+    public String showInStatistics() {
+        Parameter parameter = Parameter.getParameter(paramName);
+        return String.format("MAX VALUE: %.2f\nPERCENTAGE OF THE STANDARD: %.2f", value, (int) value / parameter.getStandard() * 100) + "%\n\n";
     }
 }

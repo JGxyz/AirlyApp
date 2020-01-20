@@ -25,6 +25,20 @@ public enum Parameter {
         this.standard = standard;
     }
 
+    public static Parameter getParameter(String name) {
+        return EnumSet.allOf(Parameter.class)
+                .stream()
+                .filter(p -> p.name.equals(name))
+                .collect(Collectors.toList()).get(0);
+    }
+
+    public static Set<Parameter> getAll() {
+        return EnumSet.allOf(Parameter.class)
+                .stream()
+                .filter(parameter -> parameter != PRESSURE && parameter != HUMIDITY && parameter != TEMPERATURE)
+                .collect(Collectors.toSet());
+    }
+
     public String getName() {
         return name;
     }
@@ -36,11 +50,6 @@ public enum Parameter {
     public double getStandard() {
         return standard;
     }
-
-    public static Set<Parameter> getAll() { return EnumSet.allOf(Parameter.class)
-            .stream()
-            .filter(parameter -> parameter != PRESSURE && parameter != HUMIDITY && parameter != TEMPERATURE)
-            .collect(Collectors.toSet());}
 
     @Override
     public String toString() {

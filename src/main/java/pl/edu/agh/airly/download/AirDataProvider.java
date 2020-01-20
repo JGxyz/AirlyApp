@@ -6,7 +6,10 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.SQLContext;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,11 +24,16 @@ public abstract class AirDataProvider<T> {
         this.sqlContext = new SQLContext(sparkContext);
     }
 
-    public AirDataProvider() {}
+    public AirDataProvider() {
+    }
 
-    public SQLContext getSqlContext() { return sqlContext; }
+    public SQLContext getSqlContext() {
+        return sqlContext;
+    }
 
-    public void setSqlContext(SQLContext sqlContext) { this.sqlContext = sqlContext;}
+    public void setSqlContext(SQLContext sqlContext) {
+        this.sqlContext = sqlContext;
+    }
 
     public void downloadData() {
         HttpURLConnection con = null;
@@ -58,7 +66,7 @@ public abstract class AirDataProvider<T> {
         long modTime = file.lastModified();
         Date date = new Date();
         long currTime = date.getTime();
-        return currTime-modTime < interval ? true : false;
+        return currTime - modTime < interval;
     }
 
     public Optional<JavaRDD<T>> readData() {
@@ -68,10 +76,13 @@ public abstract class AirDataProvider<T> {
             return Optional.of(dataset.toJavaRDD());
         }
         return Optional.empty();
-   }
+    }
 
     protected abstract String getUrl();
+
     public abstract Encoder<T> getEncoder();
+
     protected abstract void saveContentToFile(String content);
+
     protected abstract String getResourcePath();
 }

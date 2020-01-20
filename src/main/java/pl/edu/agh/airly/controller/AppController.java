@@ -19,7 +19,8 @@ public class AppController {
         this.monitor = monitor;
     }
 
-    public AppController() {}
+    public AppController() {
+    }
 
     public void initRootLayout() {
         showView("/view/MainView.fxml");
@@ -32,7 +33,7 @@ public class AppController {
             // load layout from FXML file
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(viewName));
-            AnchorPane rootLayout = (AnchorPane) loader.load();
+            AnchorPane rootLayout = loader.load();
 
             //set initial data into pl.edu.agh.airly.controller
             BasicStatisticsController controller = loader.getController();

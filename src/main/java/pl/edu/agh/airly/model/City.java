@@ -32,24 +32,6 @@ public enum City {
     private String nameWithoutPolishSigns;
     private Province province;
 
-    public String getName() {
-        return name;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public Province getProvince() {
-        return province;
-    }
-
-    public String getNameWithoutPolishSigns() {return nameWithoutPolishSigns;}
-
     City(double latitude, double longitude, String name, String nameWithoutPolishSigns, Province province) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -66,6 +48,26 @@ public enum City {
 
     public static EnumSet<City> getAll() {
         return EnumSet.allOf(City.class);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public Province getProvince() {
+        return province;
+    }
+
+    public String getNameWithoutPolishSigns() {
+        return nameWithoutPolishSigns;
     }
 
     @Override

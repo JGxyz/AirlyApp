@@ -253,4 +253,5 @@ public class MonitorTest {
     public void countMeasurementsTest() {
         assertEquals(9, monitor.countMeasurement(City.BIALYSTOK));
     }
+
 }

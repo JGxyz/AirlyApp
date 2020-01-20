@@ -30,7 +30,7 @@ public class MeasurementDataProvider extends AirDataProvider<Measurement> implem
 
     @Override
     public String getUrl() {
-        return "https://airapi.airly.eu/v2/measurements/installation?installationId="+installationId;
+        return "https://airapi.airly.eu/v2/measurements/installation?installationId=" + installationId;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MeasurementDataProvider extends AirDataProvider<Measurement> implem
 
     @Override
     public String getResourcePath() {
-        return "/home/jolanta/AGH/AirlyApp/src/main/resources/measurements/"+installationId+"_measurement.json";
+        return "/home/jolanta/AGH/AirlyApp/src/main/resources/measurements/" + installationId + "_measurement.json";
     }
 
 

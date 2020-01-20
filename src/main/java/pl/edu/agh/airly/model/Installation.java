@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Installation implements Serializable {
-   private long id;
+    private long id;
     private double latitude;
     private double longitude;
     private String city;
@@ -87,7 +87,7 @@ public class Installation implements Serializable {
         if (street != null && number != null)
             return String.format("%d - %s %s", id, street, number);
         if (street != null)
-            return  String.format("%d - %s", id, street);
+            return String.format("%d - %s", id, street);
         return String.format("%d", id);
     }
 
@@ -108,5 +108,16 @@ public class Installation implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, latitude, longitude, city, country, number, street);
+    }
+
+    public String showInStatistics() {
+        StringBuilder stringBuilder = new StringBuilder(city + " - " + id + "\n");
+        if (street != null) {
+            stringBuilder.append(street + " ");
+            if (number != null)
+                stringBuilder.append(number);
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
     }
 }

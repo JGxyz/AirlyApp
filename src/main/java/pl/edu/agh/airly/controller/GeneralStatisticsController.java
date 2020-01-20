@@ -117,14 +117,14 @@ public class GeneralStatisticsController implements BasicStatisticsController {
     private void cityChanged(City city) {
         if (city == null) return;
         currentCity = city;
-        System.out.println("SELECTED CITY: "+city);
+        System.out.println("SELECTED CITY: " + city);
         List<Installation> installations = monitor.getInstallationsFromCity(city);
         installationComboBox.setItems(FXCollections.observableList(installations));
     }
 
     private void installationChanged(Installation installation) {
         if (installation == null) return;
-        System.out.println("SELECTED INSTALLATION: "+installation);
+        System.out.println("SELECTED INSTALLATION: " + installation);
         Optional<List<Parameter>> parameters = monitor.getParametersFromInstallation(installation);
         if (parameters.isPresent()) {
             parameterComboBox.setItems(FXCollections.observableList(parameters.get()));
@@ -160,7 +160,7 @@ public class GeneralStatisticsController implements BasicStatisticsController {
     private void parameterChanged(Parameter oldParam, Parameter parameter) {
         if (parameter == null) return;
         if (currentParameter == null) currentParameter = parameter;
-        System.out.println("SELECTED PARAMETER: "+parameter);
+        System.out.println("SELECTED PARAMETER: " + parameter);
 
         XYChart.Series[] allSeries = lineChart.getData().toArray(new XYChart.Series[0]);
 
@@ -173,21 +173,23 @@ public class GeneralStatisticsController implements BasicStatisticsController {
         List<String> newDates = measurements.stream().map(measurement -> measurement.getFromDateTime()).collect(Collectors.toList());
 
         if (currentFromDateTime != null)
-            System.out.println("F: "+currentFromDateTime);
+            System.out.println("F: " + currentFromDateTime);
 
         if (currentTillDateTime != null)
-            System.out.println("T: "+currentTillDateTime);
+            System.out.println("T: " + currentTillDateTime);
 
         if (currentFromDateTime != null) {
             if (currentTillDateTime != null) {
                 if (CharSequence.compare(currentFromDateTime, currentTillDateTime) < 0) {
                     newDates = newDates.stream()
                             .filter(date -> CharSequence.compare(date, currentFromDateTime) >= 0 && CharSequence.compare(date, currentTillDateTime) <= 0)
-                            .collect(Collectors.toList()); }
+                            .collect(Collectors.toList());
+                }
             } else {
                 newDates = newDates.stream()
                         .filter(date -> CharSequence.compare(date, currentFromDateTime) >= 0)
-                        .collect(Collectors.toList()); }
+                        .collect(Collectors.toList());
+            }
         } else if (currentTillDateTime != null) {
             newDates = newDates.stream()
                     .filter(date -> CharSequence.compare(date, currentTillDateTime) <= 0)
@@ -216,29 +218,29 @@ public class GeneralStatisticsController implements BasicStatisticsController {
         series.setName(parameter.getName());
 
         String firstDate = newDates.get(0);
-        String lastDate = newDates.get(newDates.size()-1);
+        String lastDate = newDates.get(newDates.size() - 1);
 
-       measurements.forEach(measurement -> {
+        measurements.forEach(measurement -> {
             Double value = measurement.getValue();
             String time = measurement.getFromDateTime();
-            if (CharSequence.compare(time, firstDate)!=-1 && CharSequence.compare(time,lastDate)!=1)
+            if (CharSequence.compare(time, firstDate) != -1 && CharSequence.compare(time, lastDate) != 1)
                 series.getData().add(new XYChart.Data(time, value));
         });
 
         lineChart.getData().add(series);
 
         Measurement maxMeasurement = monitor.getMaxMeasurement(parameter, currentInstallation);
-        System.out.println("Max mesurement: "+maxMeasurement.getValue());
+        System.out.println("Max mesurement: " + maxMeasurement.getValue());
         if (parameter.hasStandard())
-            System.out.println("Standard: "+parameter.getStandard());
+            System.out.println("Standard: " + parameter.getStandard());
 
         System.out.println();
-        if (parameter.hasStandard() && monitor.getMaxMeasurement(parameter, currentInstallation).getValue()>=parameter.getStandard()) {
+        if (parameter.hasStandard() && monitor.getMaxMeasurement(parameter, currentInstallation).getValue() >= parameter.getStandard()) {
             XYChart.Series standard = new XYChart.Series();
             Double standardValue = parameter.getStandard();
             standard.setName("STANDARD");
             standard.getData().add(new XYChart.Data(dates.get(0), standardValue));
-            standard.getData().add(new XYChart.Data(dates.get(dates.size()-1), standardValue));
+            standard.getData().add(new XYChart.Data(dates.get(dates.size() - 1), standardValue));
             lineChart.getData().add(standard);
         }
 
