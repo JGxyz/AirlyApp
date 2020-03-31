@@ -31,7 +31,7 @@ public class Main extends Application {
         SparkConf sparkConf = new SparkConf().setAppName("AirlyApp").setMaster("local[*]");
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
         this.monitor = new Monitor(sparkContext);
-        monitor.readInstallations();
+        monitor.readInstallationAndDownloadMeasurements();
         monitor.readMeasurements();
         this.appController = new AppController(primaryStage, monitor);
         this.appController.initRootLayout();
